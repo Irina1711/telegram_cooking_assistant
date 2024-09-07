@@ -69,7 +69,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
 async def main() -> None:
     # Вставьте ваш токен, полученный от BotFather
-    application = ApplicationBuilder().token("7108925957:AAE3zQH18N6ap2TVLvtAnD6nwu0R01BMbt0").build()
+    application = ApplicationBuilder().token(""YOUR_TOKEN_HERE"").build()
 
     # Регистрация команд
     application.add_handler(CommandHandler("start", start))
