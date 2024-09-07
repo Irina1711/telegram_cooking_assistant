@@ -1,0 +1,87 @@
+import logging
+import asyncio
+import nest_asyncio
+from telegram import Update, ReplyKeyboardMarkup
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+
+# Включаем логирование
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Разрешаем вложенные циклы событий
+nest_asyncio.apply()
+
+
+# Определяем команды
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    keyboard = [
+        ["/recipe", "/tips"],
+        ["/product_info", "/cooking_time"],
+        ["/help"]
+    ]
+    reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
+
+    await update.message.reply_text(
+        "Здравствуйте! Я ваш кулинарный помощник. Чем могу помочь?",
+        reply_markup=reply_markup
+    )
+
+
+async def recipe(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text(
+        "Рецепт: Спагетти с томатным соусом\n\n"
+        "Ингредиенты:\n- Спагетти\n- Томатный соус\n- Чеснок\n- Оливковое масло\n- Соль\n\n"
+        "Приготовление:\n1. Отварите спагетти.\n"
+        "2. Обжарьте чеснок в оливковом масле.\n"
+        "3. Добавьте томатный соус и доведите до кипения.\n"
+        "4. Смешайте со спагетти и подавайте."
+    )
+
+
+async def tips(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text(
+        "Совет: Чтобы спагетти не прилипали, добавьте немного оливкового масла в воду при варке."
+    )
+
+
+async def product_info(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text(
+        "Томатный соус: Отличный источник витаминов и антиоксидантов. Используйте в различных блюдах!"
+    )
+
+
+async def cooking_time(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text(
+        "Спагетти обычно готовятся 8-12 минут в зависимости от толщины."
+    )
+
+
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text(
+        "Используйте команды:\n"
+        "/recipe - Показать рецепт\n"
+        "/tips - Кулинарные советы\n"
+        "/product_info - Информация о продукте\n"
+        "/cooking_time - Время приготовления"
+    )
+
+
+async def main() -> None:
+    # Вставьте ваш токен, полученный от BotFather
+    application = ApplicationBuilder().token("7108925957:AAE3zQH18N6ap2TVLvtAnD6nwu0R01BMbt0").build()
+
+    # Регистрация команд
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("recipe", recipe))
+    application.add_handler(CommandHandler("tips", tips))
+    application.add_handler(CommandHandler("product_info", product_info))
+    application.add_handler(CommandHandler("cooking_time", cooking_time))
+    application.add_handler(CommandHandler("help", help_command))
+
+    # Запуск бота
+    await application.run_polling()
+
+
+if __name__ == '__main__':
+    asyncio.run(main())
